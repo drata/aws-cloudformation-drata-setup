@@ -1,5 +1,4 @@
 {
-  "AWSTemplateFormatVersion": "2024-04-15",
   "Description": "Drata IAM Role to set read permissions in Org Member Accounts",
   "Parameters": {
       "DrataRoleName": {

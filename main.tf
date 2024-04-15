@@ -1,5 +1,5 @@
 locals {
-  json_template = jsonencode(file("drata_cloudformation_stackset_template.json"))
+  json_template = file("drata_cloudformation_stackset_template.json")
 }
 
 # define the stack set
@@ -16,6 +16,7 @@ resource "aws_cloudformation_stack_set" "stack_set" {
     max_concurrent_count    = 3
   }
   template_body = local.json_template
+  parameters    = { ManagementAccountID : var.management_account_id, ExternalID : var.drata_external_id }
 }
 
 # retrive the organization
