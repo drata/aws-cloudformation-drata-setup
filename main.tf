@@ -1,5 +1,5 @@
 locals {
-  json_template = file("drata_cloudformation_stackset_template.json")
+  json_template = file(".terraform/modules/drata_role_stacksets/drata_cloudformation_stackset_template.json")
 }
 
 # define the stack set
