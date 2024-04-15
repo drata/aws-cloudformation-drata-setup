@@ -16,7 +16,7 @@ resource "aws_cloudformation_stack_set" "stack_set" {
     max_concurrent_count    = 3
   }
   template_body = local.json_template
-  parameters    = { ManagementAccountID : var.management_account_id, ExternalID : var.drata_external_id }
+  parameters    = { ManagementAccountID : var.management_account_id, ExternalID : var.drata_external_id, DrataRoleName : var.role_name }
 }
 
 # retrive the organization

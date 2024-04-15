@@ -51,7 +51,7 @@
               "RoleName": {
                   "Ref": "DrataRoleName"
               },
-              "RoleDescription": "Cross-account read-only access for Drata Autopilot"
+              "Description": "Cross-account read-only access for Drata Autopilot"
           }
       }
   }
