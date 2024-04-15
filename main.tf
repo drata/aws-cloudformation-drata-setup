@@ -12,7 +12,7 @@ resource "aws_cloudformation_stack_set" "stack_set" {
     max_concurrent_count    = 3
   }
   template_body = jsonencode(
-    file("./drata_cloudformation_stackset_template.json")
+    file("drata_cloudformation_stackset_template.json")
   )
 }
 
