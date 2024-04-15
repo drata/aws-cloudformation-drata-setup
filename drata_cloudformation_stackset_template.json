@@ -1,12 +1,20 @@
 {
-  "AWSTemplateFormatVersion": "2010-09-09",
+  "AWSTemplateFormatVersion": "2024-04-15",
   "Description": "Drata IAM Role to set read permissions in Org Member Accounts",
   "Parameters": {
       "DrataRoleName": {
           "Type": "String",
-          "Description": "Provide a role name (Example: DrataReadOnlyRole)",
+          "Description": "Provide a role name (Example: DrataAutopilotRole)",
           "AllowedPattern": "[-_a-zA-Z0-9]*[org|Org|ORG][-_a-zA-Z0-9]*",
-          "Default": "DrataReadOnlyRole"
+          "Default": "DrataAutopilotRole"
+      },
+      "ManagementAccountID": {
+          "Type": "String",
+          "Description": "Management Account ID for this Organization (Example: 012345678912)",
+          "MinLength": "12",
+          "MaxLength": "12",
+          "AllowedPattern": "^\\d{12}$",
+          "ConstraintDescription": "ManagementAccountID must be 12 in length and contain numeric characters"
       },
       "ExternalID": {
           "Type": "String",
@@ -28,7 +36,7 @@
                       {
                           "Effect": "Allow",
                           "Principal": {
-                              "AWS": "arn:aws:iam::xxxxxxxxx:root"
+                              "AWS": [{ "Ref": "ManagementAccountID" }]
                           },
                           "Action": "sts:AssumeRole",
                           "Condition": {
@@ -46,14 +54,6 @@
               },
               "RoleDescription": "Cross-account read-only access for Drata Autopilot"
           }
-      }
-  },
-  "Outputs": {
-      "DrataARN": {
-          "Value": {
-              "Fn::GetAtt": ["DrataRole", "Arn"]
-          },
-          "Description": "Role ARN to configure within Drata Account Setup"
       }
   }
 }
