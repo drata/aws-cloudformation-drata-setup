@@ -1,3 +1,7 @@
+locals {
+  json_template = jsonencode(file("drata_cloudformation_stackset_template.json"))
+}
+
 # define the stack set
 # this contains the role creation template
 resource "aws_cloudformation_stack_set" "stack_set" {
@@ -11,9 +15,7 @@ resource "aws_cloudformation_stack_set" "stack_set" {
     failure_tolerance_count = 0
     max_concurrent_count    = 3
   }
-  template_body = jsonencode(
-    file("drata_cloudformation_stackset_template.json")
-  )
+  template_body = local.json_template
 }
 
 # retrive the organization
