@@ -1,16 +1,18 @@
 # aws-cloudformation-drata-setup
 
-AWS Cloudformation terraform to create the Drata Autopilot role across a given Organization.
+AWS Cloudformation terraform script to create the Drata Autopilot role across an Organizational Unit.
 
 ## Example Usage
 
-The example below uses `ref=main` (which is appended in the URL),  but it is recommended to use a specific tag version (i.e. `ref=1.0.0`) to avoid breaking changes. Go to the release page for a list of published versions. [releases page](https://github.com/drata/gcp-terraform-drata-setup/releases) for a list of published versions.
+The example below uses `ref=main` (which is appended in the URL),  but it is recommended to use a specific tag version (i.e. `ref=1.0.0`) to avoid breaking changes. Go to the release page for a list of published versions. 
+* [CloudFormation repo](https://github.com/drata/aws-cloudformation-drata-setup/releases).
+* [Single account repo](https://github.com/drata/terraform-aws-drata-autopilot-role/releases).
 
-Replace `YOUR_EXTERNAL_ID` with the external id that is given by the UI. i.e. `00000000-0000-0000-0000-000000000000`.
-Replace `YOUR_MANAGEMENT_ACCOUNT_ID` with the id of the management account. i.e. `012345678912`.
+Replace `YOUR_EXTERNAL_ID` with the external id given by the UI. i.e. `00000000-0000-0000-0000-000000000000`.
+Replace `YOUR_MANAGEMENT_ACCOUNT_ID` with the AWS management account. i.e. `012345678912`.
 
 ```
-module "drata_role_stacksets" {
+module "drata_role_cloudformation_stacksets" {
     source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
     drata_external_id = "YOUR_EXTERNAL_ID"
     management_account_id = "YOUR_MANAGEMENT_ACCOUNT_ID"
@@ -19,7 +21,7 @@ module "drata_role_stacksets" {
     # mgmt_account_release_tag = "1.0.0" # If it's unset the default value is 'main'
 }
 
-# as stacksets doesn't create resources in the management account, another module is used to go forward
+# as stacksets isn't able to create resources under the management account, another module is used to go forward
 module "management_account_autopilot_role" {
     source = "git::https://github.com/drata/terraform-aws-drata-autopilot-role.git?ref=main"
     role_sts_externalid = "YOUR_EXTERNAL_ID"
@@ -32,20 +34,19 @@ module "management_account_autopilot_role" {
 
 The following steps will guide you on how to run this script.
 
-1. Add the code above to your terraform code
-2. Replace `main` in `ref=main` with the latest version from the releases pages.
-   1. [Cloudformation repo](https://github.com/drata/aws-cloudformation-drata-setup/releases).
-   2. [Management account repo](https://github.com/drata/terraform-aws-drata-autopilot-role/releases).
+1. Add the code above to your terraform code.
+2. Replace `main` in `ref=main` with the latest version from the release pages.
+   * [CloudFormation repo](https://github.com/drata/aws-cloudformation-drata-setup/releases).
+   * [Single account repo](https://github.com/drata/terraform-aws-drata-autopilot-role/releases).
 3. In your browser, open https://app.drata.com/account-settings/connections/aws-org-units.
-4. Copy the Drata External ID from the AWS Org Units connection panel in Drata and replace `YOUR_EXTERNAL_ID` in the module with the ID you copied.
+4. Copy the `Drata External ID` from the AWS Org Units connection panel in Drata and replace `YOUR_EXTERNAL_ID` in the module with the ID you copied.
 5. Go to the AWS console, get the `Management Account Id` and replace `YOUR_MANAGEMENT_ACCOUNT_ID`.
-6. Replace `stackset_region` if the desired region is different than `us-west-2`.
+6. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
 7. The role name can be customized by setting the `drata_role_name` variable. Recommend to use `DrataAutopilotRole`.
-8. `mgmt_account_release_tag` belongs to the module that creates the role in the management account, so you can point to a specific release version with this. Recommend to use `main`. 
-9. Back in your terminal, run terraform init to download/update the module.
-10. Run terraform apply and IMPORTANT review the plan output before typing yes.
-11. If successful, go back to the AWS console and verify the Role has been generated in all the accounts.
-12. If you'd want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
+8. Back in your terminal, run terraform init to download/update the module.
+9. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
+10. If successful, go back to the AWS console and verify the Role has been generated in all the accounts.
+11. If you'd want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
