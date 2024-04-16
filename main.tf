@@ -33,7 +33,7 @@ resource "aws_cloudformation_stack_set_instance" "instances" {
 
 # as stacksets doesn't create resources in the management account, another module is used to go forward
 module "drata_management_autopilot_role" {
-  source                = "git::https://github.com/drata/terraform-aws-drata-autopilot-role.git?ref=main"
+  source                = "git::https://github.com/drata/terraform-aws-drata-autopilot-role.git?ref=${var.release_tag}"
   role_sts_externalid   = var.drata_external_id
   role_name             = var.role_name
   drata_aws_account_arn = "arn:aws:iam::${var.management_account_id}:root"

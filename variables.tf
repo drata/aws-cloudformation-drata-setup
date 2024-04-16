@@ -19,3 +19,9 @@ variable "role_name" {
   description = "Drata role name."
   default     = "DrataAutopilotRole"
 }
+
+variable "release_tag" {
+  type        = string
+  description = "Release tag utilized to target the terraform module that creates the role in the management account."
+  default     = "main"
+}
