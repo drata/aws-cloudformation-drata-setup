@@ -21,7 +21,7 @@ module "drata_role_cloudformation_stacksets" {
     # mgmt_account_release_tag = "1.0.0" # If it's unset the default value is 'main'
 }
 
-# as stacksets isn't able to create resources under the management account, another module is used to go forward
+# as stacksets isn't able to create resources under the management account this module is used to go forward
 module "management_account_autopilot_role" {
     source = "git::https://github.com/drata/terraform-aws-drata-autopilot-role.git?ref=main"
     role_sts_externalid = "YOUR_EXTERNAL_ID"
