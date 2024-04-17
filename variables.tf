@@ -13,9 +13,3 @@ variable "drata_external_id" {
   type        = string
   description = "Retrieved ID from the Drata UI."
 }
-
-variable "drata_role_name" {
-  type        = string
-  description = "Drata role name."
-  default     = "DrataAutopilotRole"
-}
