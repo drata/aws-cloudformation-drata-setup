@@ -4,11 +4,6 @@ variable "stackset_region" {
   description = "Region where the stackset instance will be executed."
 }
 
-variable "management_account_id" {
-  type        = string
-  description = "Management account id from your organization."
-}
-
 variable "drata_external_id" {
   type        = string
   description = "Drata External ID from the Drata UI."
