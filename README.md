@@ -28,11 +28,10 @@ The following steps will guide you on how to run this script.
 4. Copy the `Drata External ID` from the AWS Org Units connection panel in Drata and replace `YOUR_EXTERNAL_ID` in the module with the ID you copied.
 5. Go to the AWS console, get the `Management Account Id` and replace `YOUR_MANAGEMENT_ACCOUNT_ID`.
 6. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
-7. The role name can be customized by setting the `drata_role_name` variable. Recommend to use `DrataAutopilotRole`.
-8. Back in your terminal, run terraform init to download/update the module.
-9. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
-10. If successful, go back to the AWS console and verify the Role has been generated in all the accounts.
-11. If you'd want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
+7. Back in your terminal, run terraform init to download/update the module.
+8. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
+9.  If successful, go back to the AWS console and verify the Role has been generated in all the accounts.
+10. If you'd want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
 
 ## Disclaimer
 
