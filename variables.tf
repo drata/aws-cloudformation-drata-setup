@@ -11,5 +11,5 @@ variable "management_account_id" {
 
 variable "drata_external_id" {
   type        = string
-  description = "Retrieved ID from the Drata UI."
+  description = "Drata External ID from the Drata UI."
 }
