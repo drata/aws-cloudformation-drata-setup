@@ -30,7 +30,7 @@ The following steps will guide you on how to run this script.
 6. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
 7. Back in your terminal, run terraform init to download/update the module.
 8. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
-9.  If successful, go back to the AWS console and verify the Role has been generated in all the accounts.
+9.  If successful, go back to the AWS console and verify the Role has been generated in all the sub accounts.
 10. If you'd want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
 
 ## Disclaimer
