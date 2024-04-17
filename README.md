@@ -4,9 +4,7 @@ AWS Cloudformation terraform script to create the Drata Autopilot role across an
 
 ## Example Usage
 
-The example below uses `ref=main` (which is appended in the URL),  but it is recommended to use a specific tag version (i.e. `ref=1.0.0`) to avoid breaking changes. Go to the release page for a list of published versions. 
-* [CloudFormation repo](https://github.com/drata/aws-cloudformation-drata-setup/releases).
-* [Single account repo](https://github.com/drata/terraform-aws-drata-autopilot-role/releases).
+The example below uses `ref=main` (which is appended in the URL),  but it is recommended to use a specific tag version (i.e. `ref=1.0.0`) to avoid breaking changes. Go to the [release page](https://github.com/drata/aws-cloudformation-drata-setup/releases) for a list of published versions.
 
 Replace `YOUR_EXTERNAL_ID` with the external id given by the UI. i.e. `00000000-0000-0000-0000-000000000000`.
 Replace `YOUR_MANAGEMENT_ACCOUNT_ID` with the AWS management account. i.e. `012345678912`.
@@ -17,16 +15,6 @@ module "drata_role_cloudformation_stacksets" {
     drata_external_id = "YOUR_EXTERNAL_ID"
     management_account_id = "YOUR_MANAGEMENT_ACCOUNT_ID"
     # stackset_region = "REGION" # If it's unset the default value is 'us-west-2'
-    # drata_role_name = "YOUR_ROLE_NAME" # If it's unset the default value is 'DrataAutopilotRole'
-    # mgmt_account_release_tag = "1.0.0" # If it's unset the default value is 'main'
-}
-
-# as stacksets isn't able to create resources under the management account this module is used to go forward
-module "management_account_autopilot_role" {
-    source = "git::https://github.com/drata/terraform-aws-drata-autopilot-role.git?ref=main"
-    role_sts_externalid = "YOUR_EXTERNAL_ID"
-    drata_aws_account_arn = "arn:aws:iam::${"YOUR_MANAGEMENT_ACCOUNT_ID"}:root"
-    # role_name = var.role_name # If it's unset the default value is 'DrataAutopilotRole'
 }
 ```
 
@@ -35,9 +23,7 @@ module "management_account_autopilot_role" {
 The following steps will guide you on how to run this script.
 
 1. Add the code above to your terraform code.
-2. Replace `main` in `ref=main` with the latest version from the release pages.
-   * [CloudFormation repo](https://github.com/drata/aws-cloudformation-drata-setup/releases).
-   * [Single account repo](https://github.com/drata/terraform-aws-drata-autopilot-role/releases).
+2. Replace `main` in `ref=main` with the latest version from the [release page](https://github.com/drata/aws-cloudformation-drata-setup/releases).
 3. In your browser, open https://app.drata.com/account-settings/connections/aws-org-units.
 4. Copy the `Drata External ID` from the AWS Org Units connection panel in Drata and replace `YOUR_EXTERNAL_ID` in the module with the ID you copied.
 5. Go to the AWS console, get the `Management Account Id` and replace `YOUR_MANAGEMENT_ACCOUNT_ID`.
@@ -47,6 +33,10 @@ The following steps will guide you on how to run this script.
 9. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
 10. If successful, go back to the AWS console and verify the Role has been generated in all the accounts.
 11. If you'd want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
+
+## Disclaimer
+
+AWS CloudFormation StackSets isn't able to create resources under the management account. If you wish to create the `DrataAutopilotRole` in the management account go to this [repo](https://github.com/drata/terraform-aws-drata-autopilot-role).
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -75,8 +65,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_drata_external_id"></a> [drata\_external\_id](#input\_drata\_external\_id) | Retrieved ID from the Drata UI. | `string` | n/a | yes |
-| <a name="input_drata_role_name"></a> [drata\_role\_name](#input\_drata\_role\_name) | Drata role name. | `string` | `"DrataAutopilotRole"` | no |
+| <a name="input_drata_external_id"></a> [drata\_external\_id](#input\_drata\_external\_id) | Drata External ID from the Drata UI. | `string` | n/a | yes |
 | <a name="input_management_account_id"></a> [management\_account\_id](#input\_management\_account\_id) | Management account id from your organization. | `string` | n/a | yes |
 | <a name="input_stackset_region"></a> [stackset\_region](#input\_stackset\_region) | Region where the stackset instance will be executed. | `string` | `"us-west-2"` | no |
 
