@@ -1,5 +1,9 @@
+# get the organization info
+data "aws_organizations_organization" "organization" {}
+
 locals {
-  json_template = file(".terraform/modules/drata_role_stacksets/drata_cloudformation_stackset_template.json")
+  json_template         = file(".terraform/modules/drata_role_stacksets/drata_cloudformation_stackset_template.json")
+  management_account_id = data.aws_organizations_organization.organization.master_account_id
 }
 
 # define the stack set
@@ -16,11 +20,8 @@ resource "aws_cloudformation_stack_set" "stack_set" {
     max_concurrent_count    = 3
   }
   template_body = local.json_template
-  parameters    = { ManagementAccountID : var.management_account_id, ExternalID : var.drata_external_id }
+  parameters    = { ManagementAccountID : local.management_account_id, ExternalID : var.drata_external_id }
 }
-
-# retrive the organization
-data "aws_organizations_organization" "organization" {}
 
 # apply the stack set to the entire organization using the root id
 resource "aws_cloudformation_stack_set_instance" "instances" {
