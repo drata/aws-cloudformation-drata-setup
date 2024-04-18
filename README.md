@@ -6,7 +6,7 @@ AWS Cloudformation terraform script to create the Drata Autopilot role across an
 
 The example below uses `ref=main` (which is appended in the URL),  but it is recommended to use a specific tag version (i.e. `ref=1.0.0`) to avoid breaking changes. Go to the [release page](https://github.com/drata/aws-cloudformation-drata-setup/releases) for a list of published versions.
 
-Replace `YOUR_EXTERNAL_ID` with the external id given by the UI. i.e. `00000000-0000-0000-0000-000000000000`.
+Replace `YOUR_EXTERNAL_ID` with the external id provided in the Drata UI. i.e. `00000000-0000-0000-0000-000000000000`.
 Replace `YOUR_MANAGEMENT_ACCOUNT_ID` with the AWS management account. i.e. `012345678912`.
 
 ```
