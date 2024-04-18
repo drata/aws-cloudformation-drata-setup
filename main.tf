@@ -20,7 +20,7 @@ resource "aws_cloudformation_stack_set" "stack_set" {
     max_concurrent_count    = 3
   }
   template_body = local.json_template
-  parameters    = { ManagementAccountID : local.management_account_id, ExternalID : var.drata_external_id }
+  parameters    = { RolePrincipalAWS : local.management_account_id, RoleSTSExternalID : var.role_sts_externalid }
 }
 
 # apply the stack set to the entire organization using the root id

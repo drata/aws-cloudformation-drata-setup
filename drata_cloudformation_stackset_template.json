@@ -1,20 +1,19 @@
 {
   "Description": "Drata IAM Role to set read permissions in Org Member Accounts",
   "Parameters": {
-      "ManagementAccountID": {
+      "RolePrincipalAWS": {
           "Type": "String",
-          "Description": "Management Account ID for this Organization (Example: 012345678912)",
-          "MinLength": "12",
-          "MaxLength": "12",
+          "Description": "Management Account ID for this Organization",
+          "Default": "012345678912",
           "AllowedPattern": "^\\d{12}$",
           "ConstraintDescription": "ManagementAccountID must be 12 in length and contain numeric characters"
       },
-      "ExternalID": {
+      "RoleSTSExternalID": {
           "Type": "String",
-          "Description": "Provide an ExternalID (Example: Xoih821ddwf)",
-          "MinLength": "1",
+          "Description": "STS ExternalId condition value to use with the role",
+          "Default": "00000000-0000-0000-0000-000000000000",
           "AllowedPattern": "[a-zA-Z0-9\\=\\,\\.\\@\\:\\/\\-_]*",
-          "ConstraintDescription": "ExternalID must contain alphanumeric characters and only these special characters are allowed =,.@:/-. "
+          "ConstraintDescription": "STS ExternalId condition value to use with the role must contain alphanumeric characters and only these special characters are allowed =,.@:/-. "
       }
   },
   "Resources": {
@@ -29,13 +28,13 @@
                       {
                           "Effect": "Allow",
                           "Principal": {
-                              "AWS": [{ "Ref": "ManagementAccountID" }]
+                              "AWS": [{ "Ref": "RolePrincipalAWS" }]
                           },
                           "Action": "sts:AssumeRole",
                           "Condition": {
                               "StringEquals": {
                                   "sts:ExternalId": {
-                                      "Ref": "ExternalID"
+                                      "Ref": "RoleSTSExternalID"
                                   }
                               }
                           }
