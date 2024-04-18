@@ -65,7 +65,6 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_drata_external_id"></a> [drata\_external\_id](#input\_drata\_external\_id) | Drata External ID from the Drata UI. | `string` | n/a | yes |
-| <a name="input_management_account_id"></a> [management\_account\_id](#input\_management\_account\_id) | Management account id from your organization. | `string` | n/a | yes |
 | <a name="input_stackset_region"></a> [stackset\_region](#input\_stackset\_region) | Region where the stackset instance will be executed. | `string` | `"us-west-2"` | no |
 
 ## Outputs
