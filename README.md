@@ -8,13 +8,11 @@ AWS Cloudformation terraform script to create the Drata Autopilot role across an
 The example below uses `ref=main` (which is appended in the URL),  but it is recommended to use a specific tag version (i.e. `ref=1.0.0`) to avoid breaking changes. Go to the [release page](https://github.com/drata/aws-cloudformation-drata-setup/releases) for a list of published versions.
 
 Replace `YOUR_EXTERNAL_ID` with the external id provided in the Drata UI. i.e. `00000000-0000-0000-0000-000000000000`.
-Replace `YOUR_MANAGEMENT_ACCOUNT_ID` with the AWS management account. i.e. `012345678912`.
 
 ```
 module "drata_role_cloudformation_stacksets" {
     source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
     drata_external_id = "YOUR_EXTERNAL_ID"
-    management_account_id = "YOUR_MANAGEMENT_ACCOUNT_ID"
     # stackset_region = "REGION" # If it's unset the default value is 'us-west-2'
 }
 ```
@@ -27,12 +25,11 @@ The following steps will guide you on how to run this script.
 2. Replace `main` in `ref=main` with the latest version from the [release page](https://github.com/drata/aws-cloudformation-drata-setup/releases).
 3. In your browser, open https://app.drata.com/account-settings/connections/aws-org-units.
 4. Copy the `Drata External ID` from the AWS Org Units connection panel in Drata and replace `YOUR_EXTERNAL_ID` in the module with the ID you copied.
-5. Go to the AWS console, get the `Management Account Id` and replace `YOUR_MANAGEMENT_ACCOUNT_ID`.
-6. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
-7. Back in your terminal, run terraform init to download/update the module.
-8. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
-9.  If successful, go back to the AWS console and verify the Role has been generated in all the sub accounts.
-10. If you want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
+5. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
+6. Back in your terminal, run terraform init to download/update the module.
+7. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
+8.  If successful, go back to the AWS console and verify the Role has been generated in all the sub accounts.
+9.  If you want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
 
 ## Disclaimer
 
@@ -65,7 +62,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_drata_external_id"></a> [drata\_external\_id](#input\_drata\_external\_id) | Drata External ID from the Drata UI. | `string` | n/a | yes |
+| <a name="input_role_sts_externalid"></a> [role\_sts\_externalid](#input\_role\_sts\_externalid) | Drata External ID from the Drata UI. | `string` | `null` | no |
 | <a name="input_stackset_region"></a> [stackset\_region](#input\_stackset\_region) | Region where the stackset instance will be executed. | `string` | `"us-west-2"` | no |
 
 ## Outputs
