@@ -3,10 +3,10 @@
   "Parameters": {
       "RolePrincipalAWS": {
           "Type": "String",
-          "Description": "Management Account ID for this Organization",
-          "Default": "012345678912",
-          "AllowedPattern": "^\\d{12}$",
-          "ConstraintDescription": "ManagementAccountID must be 12 in length and contain numeric characters"
+          "Description": "Management Account ARN for this Organization",
+          "Default": "arn:aws:iam::012345678912:root",
+          "AllowedPattern": "^arn:aws:iam::\\d{12}:root$",
+          "ConstraintDescription": "RolePrincipalAWS must match arn:aws:iam::{ID}:root where ID is a numeric string with length of 12"
       },
       "RoleSTSExternalID": {
           "Type": "String",
