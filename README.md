@@ -35,7 +35,7 @@ The following steps will guide you on how to run this script.
 
 ## Disclaimer
 
-AWS CloudFormation StackSets isn't able to create resources under the management account. If you wish to create the `DrataAutopilotRole` in the management account go to this [repo](https://github.com/drata/terraform-aws-drata-autopilot-role).
+AWS CloudFormation StackSets isn't able to create resources under the management account. If you wish to create the `DrataAutopilotRole` in the management account you can use this [repo](https://github.com/drata/terraform-aws-drata-autopilot-role) or create it manually following our [help documentation](https://help.drata.com/en/articles/5048935-aws-connection-details#h_caf5c48b5d).
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
