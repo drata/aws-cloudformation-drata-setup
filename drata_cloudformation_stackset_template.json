@@ -1,19 +1,20 @@
 {
   "Description": "Drata IAM Role to set read permissions in Org Member Accounts",
   "Parameters": {
-      "RolePrincipalAWS": {
+      "DrataAWSAccountARN": {
           "Type": "String",
-          "Description": "Management Account Id for this Organization",
-          "Default": "012345678912",
-          "AllowedPattern": "\\d{12}$",
-          "ConstraintDescription": "RolePrincipalAWS a numeric string with length of 12"
+          "Description": "Drata's AWS account ARN.",
+          "Default":"arn:aws:iam::269135526815:root",
+          "AllowedPattern": "arn:aws:iam::\\d{12}:root$",
+          "MinLength": 1,
+          "ConstraintDescription": "DrataAWSAccountARN follows the format 'arn:aws:iam::' followed by exactly 12 digits (numeric characters) and ending with ':root'. It's required."
       },
       "RoleSTSExternalID": {
           "Type": "String",
-          "Description": "STS ExternalId condition value to use with the role",
-          "Default": "00000000-0000-0000-0000-000000000000",
+          "Description": "STS ExternalId condition value to use with the role.",
           "AllowedPattern": "[a-zA-Z0-9\\=\\,\\.\\@\\:\\/\\-_]*",
-          "ConstraintDescription": "STS ExternalId condition value to use with the role must contain alphanumeric characters and only these special characters are allowed =,.@:/-. "
+          "MinLength": 1,
+          "ConstraintDescription": "RoleSTSExternalID must be an UUID formatted string and is required."
       }
   },
   "Resources": {
@@ -28,7 +29,7 @@
                       {
                           "Effect": "Allow",
                           "Principal": {
-                              "AWS": [{ "Ref": "RolePrincipalAWS" }]
+                              "AWS": [{ "Ref": "DrataAWSAccountARN" }]
                           },
                           "Action": "sts:AssumeRole",
                           "Condition": {
