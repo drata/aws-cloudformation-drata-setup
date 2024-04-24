@@ -14,3 +14,9 @@ variable "role_sts_externalid" {
   type        = string
   description = "Drata External ID from the Drata UI."
 }
+
+variable "organizational_unit_ids" {
+  type        = list(string)
+  default     = null
+  description = "Organizational Unit Ids to assign the role to."
+}
