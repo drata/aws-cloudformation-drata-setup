@@ -26,7 +26,7 @@ resource "aws_cloudformation_stack_set" "stack_set" {
 # apply the stack set to the entire organization using the root id
 resource "aws_cloudformation_stack_set_instance" "instances" {
   deployment_targets {
-    organizational_unit_ids = locals.organizational_unit_ids
+    organizational_unit_ids = local.organizational_unit_ids
   }
   region         = var.stackset_region
   stack_set_name = aws_cloudformation_stack_set.stack_set.name
