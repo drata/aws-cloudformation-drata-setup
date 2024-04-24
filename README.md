@@ -29,7 +29,7 @@ The following steps will guide you on how to run this script.
 4. Copy the `Drata External ID` from the AWS Org Units connection panel in Drata and replace `YOUR_EXTERNAL_ID` in the module with the ID you copied.
 5. Add the organizational unit ids into the `organizational_unit_ids` param if you don't wish to assign the role to all sub accounts.
 6. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
-7. `drata_aws_account_arn` should be set because the role needs the Drata Account ARN to work as appropriate.
+7. `drata_aws_account_arn` shouldn't be set because the role needs the Drata Account ARN to work as appropriate.
 8. Back in your terminal, run terraform init to download/update the module.
 9. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
 10. If successful, go back to the AWS console and verify the Role has been generated in all the sub accounts.
