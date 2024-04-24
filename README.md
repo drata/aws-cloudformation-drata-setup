@@ -13,7 +13,9 @@ Replace `YOUR_EXTERNAL_ID` with the external id provided in the Drata UI. i.e. `
 module "drata_role_cloudformation_stacksets" {
     source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
     drata_external_id = "YOUR_EXTERNAL_ID"
+    # organizational_unit_ids = ["ORG_ID_1", "ORG_ID_2"] # If it's unset, the role will be assigned to all sub accounts
     # stackset_region = "REGION" # If it's unset the default value is 'us-west-2'
+    # drata_aws_account_arn = "arn:aws:iam::XXXXXXXXXXXX:root" # This shouldn't be set unless the intend is different
 }
 ```
 
@@ -25,11 +27,13 @@ The following steps will guide you on how to run this script.
 2. Replace `main` in `ref=main` with the latest version from the [release page](https://github.com/drata/aws-cloudformation-drata-setup/releases).
 3. In your browser, open https://app.drata.com/account-settings/connections/aws-org-units.
 4. Copy the `Drata External ID` from the AWS Org Units connection panel in Drata and replace `YOUR_EXTERNAL_ID` in the module with the ID you copied.
-5. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
-6. Back in your terminal, run terraform init to download/update the module.
-7. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
-8.  If successful, go back to the AWS console and verify the Role has been generated in all the sub accounts.
-9.  If you want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
+5. Add the organizational unit ids into the `organizational_unit_ids` param if you don't wish to assign the role to all sub accounts.
+6. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
+7. `drata_aws_account_arn` should be set because the role needs the Drata Account ARN to work as appropriate.
+8. Back in your terminal, run terraform init to download/update the module.
+9. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
+10. If successful, go back to the AWS console and verify the Role has been generated in all the sub accounts.
+11. If you want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
 
 ## Disclaimer
 
