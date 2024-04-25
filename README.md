@@ -15,7 +15,7 @@ module "drata_role_cloudformation_stacksets" {
     role_sts_externalid = "YOUR_EXTERNAL_ID"
     # stackset_region = "REGION" # Uncomment if you'd like to change the default value of 'us-west-2'
     # organizational_unit_ids = ["ORG_ID_1", "ORG_ID_2"] # Uncomment if you'd like to change the default behavior, which assigns the role to all sub accounts within the organization
-    # drata_aws_account_arn = "arn:aws:iam::XXXXXXXXXXXX:root" # This shouldn't be set unless the intend of running this script is different
+    # drata_aws_account_arn = "arn:aws:iam::XXXXXXXXXXXX:root" # Uncomment if you'd like to change the default value. The default value should be sufficient for most use cases
 }
 ```
 
