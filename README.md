@@ -13,7 +13,7 @@ Replace `YOUR_EXTERNAL_ID` with the external id provided in the Drata UI. i.e. `
 module "drata_role_cloudformation_stacksets" {
     source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
     role_sts_externalid = "YOUR_EXTERNAL_ID"
-    # stackset_region = "REGION" # If it's unset the default value is 'us-west-2'
+    # stackset_region = "REGION" # Uncomment if you'd like to change the default value of 'us-west-2'
     # organizational_unit_ids = ["ORG_ID_1", "ORG_ID_2"] # If it's unset, the role will be assigned to all sub accounts
     # drata_aws_account_arn = "arn:aws:iam::XXXXXXXXXXXX:root" # This shouldn't be set unless the intend of running this script is different
 }
