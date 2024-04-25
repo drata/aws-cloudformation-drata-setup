@@ -66,7 +66,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_drata_aws_account_arn"></a> [drata\_aws\_account\_arn](#input\_drata\_aws\_account\_arn) | Drata's AWS account ARN | `string` | `"arn:aws:iam::269135526815:root"` | no |
+| <a name="input_drata_aws_account_id"></a> [drata\_aws\_account\_id](#input\_drata\_aws\_account\_id) | Drata's AWS account ID | `string` | `"269135526815"` | no |
 | <a name="input_organizational_unit_ids"></a> [organizational\_unit\_ids](#input\_organizational\_unit\_ids) | Organizational Unit Ids to assign the role to. | `list(string)` | `null` | no |
 | <a name="input_role_sts_externalid"></a> [role\_sts\_externalid](#input\_role\_sts\_externalid) | Drata External ID from the Drata UI. | `string` | n/a | yes |
 | <a name="input_stackset_region"></a> [stackset\_region](#input\_stackset\_region) | Region where the stackset instance will be executed. | `string` | `"us-west-2"` | no |
