@@ -12,7 +12,7 @@ Replace `YOUR_EXTERNAL_ID` with the external id provided in the Drata UI. i.e. `
 ```
 module "drata_role_cloudformation_stacksets" {
     source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
-    drata_external_id = "YOUR_EXTERNAL_ID"
+    role_sts_externalid = "YOUR_EXTERNAL_ID"
     # stackset_region = "REGION" # If it's unset the default value is 'us-west-2'
     # organizational_unit_ids = ["ORG_ID_1", "ORG_ID_2"] # If it's unset, the role will be assigned to all sub accounts
     # drata_aws_account_arn = "arn:aws:iam::XXXXXXXXXXXX:root" # This shouldn't be set unless the intend of running this script is different
@@ -25,7 +25,7 @@ The following steps will guide you on how to run this script.
 
 1. Add the code above to your terraform code.
 2. Replace `main` in `ref=main` with the latest version from the [release page](https://github.com/drata/aws-cloudformation-drata-setup/releases).
-3. In your browser, open https://app.drata.com/account-settings/connections/aws-org-units.
+3. In your browser, open [https://app.drata.com/account-settings/connections/connection?provId=AWS_ORG_UNITS](https://app.drata.com/account-settings/connections/connection?provId=AWS_ORG_UNITS&provTypeSelected=Infrastructure&activeTab=browse&q=aws%20org&page=1).
 4. Copy the `Drata External ID` from the AWS Org Units connection panel in Drata and replace `YOUR_EXTERNAL_ID` in the module with the ID you copied.
 5. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
 6. If you don't wish to assign the role to all sub accounts, add the organizational unit ids to `organizational_unit_ids`.
