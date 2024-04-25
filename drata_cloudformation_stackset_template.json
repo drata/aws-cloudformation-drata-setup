@@ -1,13 +1,13 @@
 {
   "Description": "Drata IAM Role to set read permissions in Org Member Accounts",
   "Parameters": {
-      "DrataAWSAccountARN": {
+      "DrataAWSAccountID": {
           "Type": "String",
-          "Description": "Drata's AWS account ARN.",
-          "Default":"arn:aws:iam::269135526815:root",
-          "AllowedPattern": "arn:aws:iam::\\d{12}:root$",
+          "Description": "Drata's AWS account ID.",
+          "Default": "269135526815",
+          "AllowedPattern": "\\d{12}$",
           "MinLength": 1,
-          "ConstraintDescription": "DrataAWSAccountARN follows the format 'arn:aws:iam::' followed by exactly 12 digits (numeric characters) and ending with ':root'. It's required."
+          "ConstraintDescription": "DrataAWSAccountID should be exactly 12 digits (numeric characters). It's required."
       },
       "RoleSTSExternalID": {
           "Type": "String",
@@ -29,7 +29,7 @@
                       {
                           "Effect": "Allow",
                           "Principal": {
-                              "AWS": [{ "Ref": "DrataAWSAccountARN" }]
+                              "AWS": [ { "Fn::Sub": "arn:aws:iam::${DrataAWSAccountID}:root" } ]
                           },
                           "Action": "sts:AssumeRole",
                           "Condition": {
