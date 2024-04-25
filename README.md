@@ -15,7 +15,7 @@ module "drata_role_cloudformation_stacksets" {
     role_sts_externalid = "YOUR_EXTERNAL_ID"
     # stackset_region = "REGION" # Uncomment if you'd like to change the default value of 'us-west-2'
     # organizational_unit_ids = ["ORG_ID_1", "ORG_ID_2"] # Uncomment if you'd like to change the default behavior, which assigns the role to all sub accounts within the organization
-    # drata_aws_account_arn = "arn:aws:iam::XXXXXXXXXXXX:root" # Uncomment if you'd like to change the default value. The default value should be sufficient for most use cases
+    # drata_aws_account_id = "XXXXXXXXXXXX" # Uncomment if you'd like to change the default value. The default value should be sufficient for most use cases
 }
 ```
 
@@ -29,7 +29,7 @@ The following steps will guide you on how to run this script.
 4. Copy the `Drata External ID` from the AWS Org Units connection panel in Drata and replace `YOUR_EXTERNAL_ID` in the module with the ID you copied.
 5. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
 6. If you don't wish to assign the role to all sub accounts, add the organizational unit ids to `organizational_unit_ids`.
-7. `drata_aws_account_arn` shouldn't be set because unless there is a specific requirement.
+7. `drata_aws_account_id` shouldn't be set because the default value is enough for most use cases.
 8. Back in your terminal, run terraform init to download/update the module.
 9. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
 10. If successful, go back to the AWS console and verify the Role has been generated in all the sub accounts.
