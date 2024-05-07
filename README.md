@@ -3,7 +3,7 @@
 AWS Cloudformation terraform script to create the Drata Autopilot role across an Organizational Unit.
 ***NOTE:*** Make sure you run this script with the management account credentials.
 
-_Optionally you may create the CloudFormation StackSet directly in the console, download the [json template](https://github.com/drata/aws-cloudformation-drata-setup/drata_cloudformation_stackset_template.json) and upload it as a template resource._
+_Optionally you may create the CloudFormation StackSet directly in the console, download the [json template](https://github.com/drata/aws-cloudformation-drata-setup/blob/main/drata_cloudformation_stackset_template.json) and upload it as a template resource._
 
 ## Example Usage
 
