@@ -1,50 +1,70 @@
 {
   "Description": "Drata IAM Role to set read permissions in Org Member Accounts",
   "Parameters": {
-      "DrataAWSAccountID": {
-          "Type": "String",
-          "Description": "Drata's AWS account ID.",
-          "Default": "269135526815",
-          "AllowedPattern": "\\d{12}$",
-          "MinLength": 1,
-          "ConstraintDescription": "DrataAWSAccountID should be exactly 12 digits (numeric characters). It's required."
-      },
-      "RoleSTSExternalID": {
-          "Type": "String",
-          "Description": "STS ExternalId condition value to use with the role.",
-          "AllowedPattern": "[a-zA-Z0-9\\=\\,\\.\\@\\:\\/\\-_]*",
-          "MinLength": 1,
-          "ConstraintDescription": "RoleSTSExternalID must be an UUID formatted string and is required."
-      }
+    "DrataAWSAccountID": {
+      "Type": "String",
+      "Description": "Drata's AWS account ID.",
+      "Default": "269135526815",
+      "AllowedPattern": "\\d{12}$",
+      "MinLength": 1,
+      "ConstraintDescription": "DrataAWSAccountID should be exactly 12 digits (numeric characters). It's required."
+    },
+    "RoleSTSExternalID": {
+      "Type": "String",
+      "Description": "STS ExternalId condition value to use with the role.",
+      "AllowedPattern": "[a-zA-Z0-9\\=\\,\\.\\@\\:\\/\\-_]*",
+      "MinLength": 1,
+      "ConstraintDescription": "RoleSTSExternalID must be an UUID formatted string and is required."
+    }
   },
   "Resources": {
-      "DrataRole": {
-          "Type": "AWS::IAM::Role",
-          "Properties": {
-              "ManagedPolicyArns": ["arn:aws:iam::aws:policy/SecurityAudit"],
-              "MaxSessionDuration": 43200,
-              "AssumeRolePolicyDocument": {
-                  "Version": "2012-10-17",
-                  "Statement": [
-                      {
-                          "Effect": "Allow",
-                          "Principal": {
-                              "AWS": [ { "Fn::Sub": "arn:aws:iam::${DrataAWSAccountID}:root" } ]
-                          },
-                          "Action": "sts:AssumeRole",
-                          "Condition": {
-                              "StringEquals": {
-                                  "sts:ExternalId": {
-                                      "Ref": "RoleSTSExternalID"
-                                  }
-                              }
-                          }
-                      }
-                  ]
+    "DrataRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "ManagedPolicyArns": ["arn:aws:iam::aws:policy/SecurityAudit"],
+        "MaxSessionDuration": 43200,
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": [{ "Fn::Sub": "arn:aws:iam::${DrataAWSAccountID}:root" }]
               },
-              "RoleName": "DrataAutopilotRole",
-              "Description": "Cross-account read-only access for Drata Autopilot"
-          }
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "RoleSTSExternalID"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "RoleName": "Cloud1DrataAutopilotRole",
+        "Description": "Cross-account read-only access for Drata Autopilot"
       }
+    },
+    "DrataAdditionalPermissionsPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "DrataAdditionalPermissions",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "backup:ListBackupJobs",
+                "backup:ListRecoveryPointsByResource"
+              ],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [{ "Ref": "DrataRole" }]
+      }
+    }
   }
 }
