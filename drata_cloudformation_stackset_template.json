@@ -42,7 +42,7 @@
             }
           ]
         },
-        "RoleName": "Cloud1DrataAutopilotRole",
+        "RoleName": "DrataAutopilotRole",
         "Description": "Cross-account read-only access for Drata Autopilot"
       }
     },

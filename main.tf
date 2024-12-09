@@ -2,7 +2,7 @@
 data "aws_organizations_organization" "organization" {}
 
 locals {
-  json_template           = file(".terraform/modules/drata_role_cloudformation_stacksets/drata_cloudformation_stackset_template.json")
+  json_template           = file("${path.module}/drata_cloudformation_stackset_template.json")
   organizational_unit_ids = var.organizational_unit_ids == null ? [data.aws_organizations_organization.organization.roots[0].id] : var.organizational_unit_ids
 }
 
