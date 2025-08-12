@@ -28,6 +28,6 @@ resource "aws_cloudformation_stack_set_instance" "instances" {
   deployment_targets {
     organizational_unit_ids = local.organizational_unit_ids
   }
-  region         = var.stackset_region
-  stack_set_name = aws_cloudformation_stack_set.stack_set.name
+  stack_set_instance_region = var.stackset_region
+  stack_set_name            = aws_cloudformation_stack_set.stack_set.name
 }
