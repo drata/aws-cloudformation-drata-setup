@@ -21,6 +21,10 @@ resource "aws_cloudformation_stack_set" "stack_set" {
   }
   template_body = local.json_template
   parameters    = { DrataAWSAccountID : var.drata_aws_account_id, RoleSTSExternalID : var.role_sts_externalid }
+
+  lifecycle {
+    ignore_changes = [administration_role_arn]
+  }
 }
 
 # apply the stack set to the entire organization using the root id
@@ -28,6 +32,6 @@ resource "aws_cloudformation_stack_set_instance" "instances" {
   deployment_targets {
     organizational_unit_ids = local.organizational_unit_ids
   }
-  region         = var.stackset_region
-  stack_set_name = aws_cloudformation_stack_set.stack_set.name
+  stack_set_instance_region = var.stackset_region
+  stack_set_name            = aws_cloudformation_stack_set.stack_set.name
 }
