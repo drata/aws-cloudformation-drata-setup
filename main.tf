@@ -3,13 +3,24 @@ data "aws_organizations_organization" "organization" {}
 
 locals {
   json_template           = file("${path.module}/drata_cloudformation_stackset_template.json")
-  organizational_unit_ids = var.organizational_unit_ids == null ? [data.aws_organizations_organization.organization.roots[0].id] : var.organizational_unit_ids
+  # Default to organization root only if no OUs or accounts specified
+  organizational_unit_ids = (
+    var.organizational_unit_ids != null ? var.organizational_unit_ids :
+    var.target_account_ids == null ? [data.aws_organizations_organization.organization.roots[0].id] : []
+  )
+  # Include target accounts only when specified
+  target_account_ids = var.target_account_ids != null ? var.target_account_ids : []
+  
+  # Only include account_filter_type when both OUs and accounts are specified
+  account_filter_type = (
+    var.organizational_unit_ids != null && var.target_account_ids != null ? var.account_filter_type : "NONE"
+  )
 }
 
 # define the stack set
 # this contains the role creation template
 resource "aws_cloudformation_stack_set" "stack_set" {
-  name             = "drata-role-terraform-stack-set"
+  name             = var.stack_set_name
   permission_model = "SERVICE_MANAGED"
   capabilities     = ["CAPABILITY_NAMED_IAM"]
   auto_deployment {
@@ -21,6 +32,7 @@ resource "aws_cloudformation_stack_set" "stack_set" {
   }
   template_body = local.json_template
   parameters    = { DrataAWSAccountID : var.drata_aws_account_id, RoleSTSExternalID : var.role_sts_externalid }
+  tags          = var.tags
 
   lifecycle {
     ignore_changes = [administration_role_arn]
@@ -31,6 +43,8 @@ resource "aws_cloudformation_stack_set" "stack_set" {
 resource "aws_cloudformation_stack_set_instance" "instances" {
   deployment_targets {
     organizational_unit_ids = local.organizational_unit_ids
+    accounts                = var.target_account_ids != null ? local.target_account_ids : null
+    account_filter_type     = local.account_filter_type
   }
   stack_set_instance_region = var.stackset_region
   stack_set_name            = aws_cloudformation_stack_set.stack_set.name

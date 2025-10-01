@@ -11,13 +11,35 @@ The example below uses `ref=main` (which is appended in the URL),  but it is rec
 
 Replace `YOUR_EXTERNAL_ID` with the external id provided in the Drata UI. i.e. `00000000-0000-0000-0000-000000000000`.
 
-```
+```terraform
 module "drata_role_cloudformation_stacksets" {
     source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
     role_sts_externalid = "YOUR_EXTERNAL_ID"
-    # stackset_region = "REGION" # Uncomment if you'd like to change the default value of 'us-west-2'
-    # organizational_unit_ids = ["ORG_ID_1", "ORG_ID_2"] # Uncomment if you'd like to change the default behavior, which assigns the role to all sub accounts within the organization
-    # drata_aws_account_id = "XXXXXXXXXXXX" # Uncomment if you'd like to change the default value. The default value should be sufficient for most use cases
+
+    # Optional: Change the default region (default: us-west-2)
+    # stackset_region = "us-east-1"
+
+    # Optional: Specify organizational units (default: organization root)
+    # organizational_unit_ids = ["ou-xxxx-xxxxxxxx", "ou-yyyy-yyyyyyyy"]
+
+    # Optional: Target specific account IDs
+    # target_account_ids = ["123456789012", "234567890123"]
+
+    # Optional: Control account filtering behavior (default: INTERSECTION)
+    # account_filter_type = "INTERSECTION"  # Options: NONE, INTERSECTION, DIFFERENCE, UNION
+
+    # Optional: Customize the StackSet name (default: drata-role-terraform-stack-set)
+    # stack_set_name = "my-custom-drata-stackset"
+
+    # Optional: Apply custom tags to resources
+    # tags = {
+    #   Environment = "production"
+    #   Team        = "security"
+    #   CostCenter  = "compliance"
+    # }
+
+    # Optional: Override Drata's AWS account ID (rarely needed)
+    # drata_aws_account_id = "269135526815"
 }
 ```
 
@@ -32,12 +54,129 @@ The following steps will guide you on how to run this script.
 3. In your browser, open [https://app.drata.com/account-settings/connections/connection?provId=AWS_ORG_UNITS](https://app.drata.com/account-settings/connections/connection?provId=AWS_ORG_UNITS&provTypeSelected=Infrastructure&activeTab=browse&q=aws%20org&page=1).
 4. Copy the `Drata External ID` from the AWS Org Units connection panel in Drata and replace `YOUR_EXTERNAL_ID` in the module with the ID you copied.
 5. Replace `stackset_region` if the desired region is different than the default value `us-west-2`.
-6. If you don't wish to assign the role to all sub accounts, add the organizational unit ids to `organizational_unit_ids`.
-7. `drata_aws_account_id` shouldn't be set because the default value is enough for most use cases.
-8. Back in your terminal, run terraform init to download/update the module.
-9. Run terraform apply and **IMPORTANT** review the plan output before typing yes.
-10. If successful, go back to the AWS console and verify the Role has been generated in all the sub accounts.
-11. If you want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
+6. **Configure Organizational Units (Optional)**: If you don't wish to assign the role to all accounts in your organization, specify the organizational unit IDs in `organizational_unit_ids`. If omitted, defaults to the organization root.
+7. **Target Specific Accounts (Optional)**: To target specific AWS account IDs, add them to `target_account_ids`. Account IDs must be exactly 12 digits. See "Account Targeting Options" below for details on how this interacts with `organizational_unit_ids`.
+8. **Configure Account Filtering (Optional)**: When both `organizational_unit_ids` and `target_account_ids` are specified, use `account_filter_type` to control the filtering behavior:
+   - `INTERSECTION` (default): Deploy only to specified accounts that exist within the specified OUs
+   - `UNION`: Deploy to all accounts in the OUs plus the specified accounts
+   - `DIFFERENCE`: Deploy to all accounts in the OUs except the specified accounts
+   - `NONE`: Deploy to all accounts in the specified OUs (ignores `target_account_ids`)
+9. **Apply Custom Tags (Optional)**: Add custom tags to `tags` if you want to apply them to the StackSet and StackSet Instances resources. Note: Tags are applied to Terraform-managed resources but not to the IAM role created by the CloudFormation template.
+10. **Customize StackSet Name (Optional)**: If you need to avoid naming conflicts or prefer a different name, set `stack_set_name`. The default is `drata-role-terraform-stack-set`.
+11. **Override Drata Account ID (Rarely Needed)**: `drata_aws_account_id` shouldn't be changed as the default value is sufficient for most use cases.
+12. Back in your terminal, run `terraform init` to download/update the module.
+13. Run `terraform apply` and **IMPORTANT** review the plan output before typing yes.
+14. If successful, go back to the AWS console and verify the Role has been generated in all the target accounts.
+15. If you want to roll back the operations this script just performed, type `terraform destroy` and `enter`.
+
+## Account Targeting Options
+
+This module provides flexible options for targeting AWS accounts with fine-grained control over deployment scope.
+
+### Default Behavior (No Configuration)
+- When neither `organizational_unit_ids` nor `target_account_ids` is specified, the StackSet targets **all accounts** in your AWS organization (uses the organization root)
+
+### Organizational Unit Targeting
+- Set `organizational_unit_ids` to target specific organizational units
+- Example: `organizational_unit_ids = ["ou-xxxx-xxxxxxxx", "ou-yyyy-yyyyyyyy"]`
+- The StackSet will deploy to all accounts within the specified OUs
+
+### Specific Account Targeting
+- This option can only be used in conjunction with `organizational_unit_ids`.
+- Set `target_account_ids` to target specific AWS account IDs
+- Example: `target_account_ids = ["123456789012", "234567890123"]`
+- Account IDs must be exactly 12 digits
+- When used alone (without `organizational_unit_ids`), deploys only to the specified accounts
+
+### Combined Targeting with Account Filtering
+
+When both `organizational_unit_ids` and `target_account_ids` are provided, use `account_filter_type` to control the deployment behavior:
+
+#### `INTERSECTION` (Default - Recommended)
+- Deploys **only** to accounts that are:
+  1. Listed in `target_account_ids` **AND**
+  2. Exist within the specified `organizational_unit_ids`
+- **Use case**: "Deploy to these specific accounts, but only if they're in these OUs"
+- **Example**: Target production accounts within the security OU
+
+#### `UNION`
+- Deploys to accounts that are:
+  1. In the specified `organizational_unit_ids` **OR**
+  2. Listed in `target_account_ids`
+- **Use case**: "Deploy to all accounts in these OUs, plus these additional specific accounts"
+- **Example**: All dev OU accounts plus a few specific test accounts outside the OU
+
+#### `DIFFERENCE`
+- Deploys to accounts that are:
+  1. In the specified `organizational_unit_ids` **BUT NOT**
+  2. Listed in `target_account_ids`
+- **Use case**: "Deploy to all accounts in these OUs except these specific ones"
+- **Example**: All accounts in production OU except the legacy account
+
+#### `NONE`
+- Deploys to **all accounts** in the specified `organizational_unit_ids`
+- Ignores `target_account_ids` completely
+- **Use case**: When you want to explicitly ignore account filtering
+
+### Tagging
+- Use the `tags` variable to apply custom tags to the StackSet and StackSet Instances resources
+- Tags help with cost allocation, resource organization, and compliance tracking
+- **Important**: Tags are applied to the Terraform-managed CloudFormation resources (StackSet and StackSet Instances) but **not** to the IAM role created by the CloudFormation template itself
+
+### Examples
+
+**Example 1: All accounts in organization (default)**
+```terraform
+module "drata_role_cloudformation_stacksets" {
+    source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
+    role_sts_externalid = "YOUR_EXTERNAL_ID"
+}
+```
+
+**Example 2: Specific organizational units only**
+```terraform
+module "drata_role_cloudformation_stacksets" {
+    source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
+    role_sts_externalid = "YOUR_EXTERNAL_ID"
+    organizational_unit_ids = ["ou-prod-12345678", "ou-staging-87654321"]
+}
+```
+
+**Example 3: Specific accounts within OUs (default Intersectionbehavior)**
+```terraform
+module "drata_role_cloudformation_stacksets" {
+    source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
+    role_sts_externalid = "YOUR_EXTERNAL_ID"
+    organizational_unit_ids = ["ou-prod-12345678"]
+    target_account_ids = ["123456789012", "234567890123"] # Only these accounts if they're in the prod OU
+    account_filter_type = "INTERSECTION" # Note: This is the default behavior and is shown here for clarity
+}
+```
+
+**Example 4: All accounts in specified OUs that are NOT within provided list**
+```terraform
+module "drata_role_cloudformation_stacksets" {
+    source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
+    role_sts_externalid = "YOUR_EXTERNAL_ID"
+    organizational_unit_ids = ["ou-prod-12345678"]
+    target_account_ids = ["123456789012", "234567890123"] # Accounts to exclude from deployment
+    account_filter_type = "DIFFERENCE" # Deploy stacks to all accounts in the prod OU except for specific accounts.
+}
+```
+
+**Example 5: With custom tags**
+```terraform
+module "drata_role_cloudformation_stacksets" {
+    source = "git::https://github.com/drata/aws-cloudformation-drata-setup.git?ref=main"
+    role_sts_externalid = "YOUR_EXTERNAL_ID"
+    tags = {
+        Environment = "production"
+        Team        = "security"
+        Compliance  = "drata"
+        CostCenter  = "security-ops"
+    }
+}
+```
 
 ## Disclaimer
 
@@ -63,17 +202,21 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_cloudformation_stack_set.stack_set](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudformation_stack_set) | resource |
-| [aws_cloudformation_stack_set_instance.instances](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudformation_stack_set_instance) | resource |
+| [aws_cloudformation_stack_instances.instances](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudformation_stack_instances) | resource |
 | [aws_organizations_organization.organization](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/organizations_organization) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_account_filter_type"></a> [account\_filter\_type](#input\_account\_filter\_type) | The type of account filter to apply when both organizational_unit_ids and target_account_ids are specified: NONE, INTERSECTION, DIFFERENCE, or UNION | `string` | `"INTERSECTION"` | no |
 | <a name="input_drata_aws_account_id"></a> [drata\_aws\_account\_id](#input\_drata\_aws\_account\_id) | Drata's AWS account ID | `string` | `"269135526815"` | no |
 | <a name="input_organizational_unit_ids"></a> [organizational\_unit\_ids](#input\_organizational\_unit\_ids) | Organizational Unit Ids to assign the role to. | `list(string)` | `null` | no |
 | <a name="input_role_sts_externalid"></a> [role\_sts\_externalid](#input\_role\_sts\_externalid) | Drata External ID from the Drata UI. | `string` | n/a | yes |
+| <a name="input_stack_set_name"></a> [stack\_set\_name](#input\_stack\_set\_name) | Name of the CloudFormation StackSet. Change this if you need to avoid naming conflicts. | `string` | `"drata-role-terraform-stack-set"` | no |
 | <a name="input_stackset_region"></a> [stackset\_region](#input\_stackset\_region) | Region where the stackset instance will be executed. | `string` | `"us-west-2"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to apply to all created resources. | `map(string)` | `{}` | no |
+| <a name="input_target_account_ids"></a> [target\_account\_ids](#input\_target\_account\_ids) | List of specific account IDs to target. When provided, only these accounts will be targeted (in combination with organizational_unit_ids if specified). If null, all accounts in the specified OUs will be targeted. | `list(string)` | `null` | no |
 
 ## Outputs
 
